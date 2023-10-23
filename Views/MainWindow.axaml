@@ -1,0 +1,136 @@
+<Window
+    x:Class="Solution.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+    xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:Solution.ViewModels"
+    Title="Solution"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainWindowViewModel"
+    CanResize="False"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d">
+
+    <Window.Resources>
+        <Image x:Key="CollapseIcon" Source="/Assets/collapse-icon.png" />
+        <Image x:Key="DeleteIcon" Source="/Assets/delete-icon.png" />
+        <Image x:Key="ExpandIcon" Source="/Assets/expand-icon.png" />
+        <Image x:Key="SearchIcon" Source="/Assets/search-icon.png" />
+    </Window.Resources>
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
+                    <ColumnDefinition Width="30" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding SearchString}" />
+
+                <Button
+                    Grid.Column="1"
+                    Width="30"
+                    Height="30"
+                    Command="{Binding SearchBooksCommand}"
+                    CommandParameter="{Binding ElementName=_genresTreeView}"
+                    Content="{StaticResource SearchIcon}" />
+
+                <Button
+                    Grid.Column="2"
+                    Width="30"
+                    Height="30"
+                    Command="{Binding CollapseAllNodesCommand}"
+                    CommandParameter="{Binding ElementName=_genresTreeView}"
+                    Content="{StaticResource CollapseIcon}" />
+
+                <Button
+                    Grid.Column="3"
+                    Width="30"
+                    Height="30"
+                    Command="{Binding ExpandAllNodesCommand}"
+                    CommandParameter="{Binding ElementName=_genresTreeView}"
+                    Content="{StaticResource ExpandIcon}" />
+            </Grid>
+
+            <TreeView
+                Name="_genresTreeView"
+                Grid.Row="1"
+                Items="{Binding GenreTreeViewNodes}">
+                <TreeView.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding SubNodes}">
+                        <TextBlock Text="{Binding Text}" />
+                    </TreeDataTemplate>
+                </TreeView.ItemTemplate>
+
+                <i:Interaction.Behaviors>
+                    <ia:EventTriggerBehavior EventName="DoubleTapped">
+                        <InvokeCommandAction Command="{Binding AddBookOrGenreCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}, Path=SelectedItem}" />
+                    </ia:EventTriggerBehavior>
+
+                    <ia:EventTriggerBehavior EventName="PointerPressed">
+                        <InvokeCommandAction Command="{Binding TreeViewPointerPressedCommand}" CommandParameter="{Binding RelativeSource={RelativeSource Self}}" />
+                    </ia:EventTriggerBehavior>
+                </i:Interaction.Behaviors>
+            </TreeView>
+        </Grid>
+
+        <DataGrid
+            Grid.Column="1"
+            AutoGenerateColumns="False"
+            Background="Transparent"
+            CanUserReorderColumns="False"
+            CanUserResizeColumns="False"
+            DragDrop.AllowDrop="True"
+            IsReadOnly="True"
+            Items="{Binding Books}">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding GenreName}"
+                    Header="Жанр" />
+
+                <DataGridTextColumn
+                    Width="500"
+                    Binding="{Binding Title}"
+                    Header="Название" />
+
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding Author}"
+                    Header="Автор" />
+
+                <DataGridTemplateColumn Width="30">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button
+                                Command="{Binding Path=DataContext.DeleteBookCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}}"
+                                CommandParameter="{Binding Path=Id}"
+                                Content="X" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
