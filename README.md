@@ -10,7 +10,7 @@
 5) удаление книг из списка.
 
 ## Описание функциональных компонент
-![for-readme](https://github.com/alabamastar/solution-for-atomiq-soft/assets/75066323/8ac267b7-6e83-456f-a1dd-5c940954d635)
+![for-readme](https://github.com/alabamastar/solution-for-atomiq-soft/assets/75066323/f308fb0c-7c18-4b89-b3e3-22e33874e6f0)
 
 1 - строка для ввода поискового запроса.\
 2 - кнопка поиска.\
