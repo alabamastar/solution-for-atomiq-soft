@@ -22,10 +22,10 @@
 Команды для сборки:
 ```
 # Linux build:
-dotnet publish -c release -r linux-x64
+dotnet publish -c release -r linux-x64 --self-contained
 
 # Windows build:
-dotnet publish -c release -r win-x64
+dotnet publish -c release -r win-x64 --self-contained
 ```
 
 Готовые сборки, предоставленные в архиве, тестировались на следующих системах:\
